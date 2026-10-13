@@ -262,7 +262,7 @@
     table {border-collapse:collapse !important;table-layout:fixed !important;}
     thead th {font-size:9px !important;padding:2px 5px !important;line-height:11px !important;}
     th,td,.subtotal td {font-size:9px !important;padding:1px 5px !important;
-      height:21px !important;line-height:12px !important;}
+      height:20px !important;line-height:12px !important;}
     td.label-col {font-size:9px !important;}
     .food-days {height:15px !important;width:31px !important;font-size:9px !important;
       line-height:13px !important;padding:0 !important;right:calc(100% + 5px) !important;}
@@ -301,17 +301,17 @@
     H1:'2530000',H2:'37000',H3:'36000',H4:'',
     D9:'0',E9:'=D9*$H$1',D10:'0',E10:'=D10*$H$1',D11:'0',E11:'=D11*$H$1',
     D12:'0',E12:'=D12*$H$1',D13:'0',E13:'=D13*$H$1',D14:'0.25',E14:'=D14*$E$9',
-    D15:'0.5',E15:'=D15*$E$9',D16:'=DATEDIF(D5,TODAY(),"y")/100',E16:'=D16*$E$9',
+    D15:'0.5',E15:'=D15*$E$9',D21:'0.7',E21:'=D21*$E$9',D16:'=DATEDIF(D5,TODAY(),"y")/100',E16:'=D16*$E$9',
     D17:'0.45',E17:'=D17*$E$9',D18:'=DAY(EOMONTH(TODAY(),0))',E18:'=D18*$H$2',
-    D19:'',E19:'=D19*$H$3',D20:'=SUM(E9:F19)',
+    D19:'',E19:'=D19*$H$3',D20:'=SUM(E9:F19)+E21',
     E22:'=(E9+E16) *8%',E23:'=(E9:F9+E16:F16)*1%',E24:'=H4*109000',E25:'',
     E26:'',E27:'',E28:'',E29:'=SUM(E22:F28)',D30:'=D20-E29'
   };
   const PROFILE=[['Họ tên:','D1'],['Cấp bậc:','D2'],['Chức vụ:','D3'],['Đơn vị:','D4'],['Nhập ngũ:','D5']];
   const PARAMS=[['Mức lương cơ sở','H1'],['Tiền ăn QBC / ngày','H2'],['Tiền ăn thêm / ngày','H3']];
-  const INCOME=[['Lương chính','D9','E9'],['Khu vực','D10','E10'],['Độc hại BG','D11','E11'],['Trách nhiệm BVBG','D12','E12'],['Lâu năm ĐBKK','D13','E13'],['Công vụ','D14','E14'],['Đặc biệt','D15','E15'],['Thâm niên','D16','E16'],['Đặc thù quân sự','D17','E17'],['Tiền ăn QBC','D18','E18'],['Tiền ăn thêm','D19','E19']];
+  const INCOME=[['Lương chính','D9','E9'],['Khu vực','D10','E10'],['Độc hại BG','D11','E11'],['Trách nhiệm BVBG','D12','E12'],['Lâu năm ĐBKK','D13','E13'],['Công vụ','D14','E14'],['Đặc biệt','D15','E15'],['Thu hút','D21','E21'],['Thâm niên','D16','E16'],['Đặc thù quân sự','D17','E17'],['Tiền ăn QBC','D18','E18'],['Tiền ăn thêm','D19','E19']];
   const DEDUCTIONS=[['Bảo hiểm xã hội','E22'],['Đảng phí','E23'],['Tiền ăn','E24'],['Quỹ vì người nghèo','E25'],['Quỹ ĐƠĐN','E26'],['NBETT','E27'],['Tiền khác','E28']];
-  const PCTS=new Set(['D14','D15','D16','D17']);
+  const PCTS=new Set(['D14','D15','D21','D16','D17']);
   const TEXTS=new Set(['D1','D2','D3','D4']);
   const DAYS=new Set(['D18','D19','H4']);
   const formatMoney = new Intl.NumberFormat('vi-VN',{maximumFractionDigits:0});
@@ -335,6 +335,8 @@
         // Bản trước để trống E24; nâng cấp mặc định thành số ngày ăn × 109.000 đ.
         // Nếu người dùng đã nhập công thức hoặc số tiền riêng, vẫn giữ nguyên.
         if(id==='E24' && !saved[id].trim())continue;
+        // Nâng cấp v1.9: công thức tổng hưởng cũ thiếu khoản Thu hút.
+        if(id==='D20' && saved[id].replace(/\s/g,'').toUpperCase()==='=SUM(E9:F19)')continue;
         // Bản HTML cũ đã lưu nhầm một số ô Số tiền thành hằng số.
         // Phục hồi công thức chuẩn của tất cả các dòng thu nhập; vẫn giữ
         // công thức tùy chỉnh nếu người dùng đã tự thay công thức.
